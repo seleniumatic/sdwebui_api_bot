@@ -1,116 +1,37 @@
 package com.seleniumatic.sd;
 
 import java.io.File;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.seleniumatic.sd.common.AppConfig;
 import com.seleniumatic.sd.common.Util;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class App 
-{
-    private static final String apiUrl = "http://127.0.0.1:7860/sdapi/v1/txt2img";
+public class App {
+
+    static Integer pollingInterval = AppConfig.getPollingIntervalSec();
+    static String apiUrl = AppConfig.getTxt2ImgEndpoint();
 
     public static void main( String[] args ) throws Exception
     {
         setUpFolders();
 
-        System.out.print("Enter number of minutes to run: ");
-        Scanner scanner = new Scanner(System.in);
-        Integer numberOfMins = scanner.nextInt();
-        scanner.close();
+        System.out.println("Bot running...");
 
-        doTheWork3();
+        doTheWork();
     }
 
     private static void setUpFolders() throws Exception
     {
         Util.createApplicationFolder("json_input");
         Util.createApplicationFolder("image_output");
+        Util.createApplicationFolder("config");
+        Util.createSampleTxt2ImageFile();
     }
 
     private static void doTheWork() throws Exception
-    {
-        System.out.print("Enter number of minutes to run: ");
-
-        String inputFilePath = Util.getApplicationPath() + File.separator + "json_input" + File.separator + "txt2img.json";
-        String jsonBody = Util.readFileFromPath(inputFilePath);
-      
-        try (Scanner scanner = new Scanner(System.in)) {
-            final int runDurationMins = Integer.parseInt(scanner.nextLine());
-        
-            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-            boolean shouldStop[] = {false};
-
-            executor.schedule(() -> {
-                shouldStop[0] = true;
-                System.out.println("Application is shutting down after " + runDurationMins + " minutes.");
-                executor.shutdown();
-            }, runDurationMins, TimeUnit.MINUTES);
-
-            int count = 0;
-            while (!shouldStop[0] && count <= runDurationMins * 60) {
-                count++;
-                System.out.println("Running application... request: " + count);
-                    
-                //logger.info("Running application... request: " + count);
-
-                try {
-                    String response = Util.postJson(apiUrl, jsonBody);
-
-                    JsonNode imageNode = Util.getJsonImageNode(response);
-
-                    Util.decodeAndSaveImage(imageNode);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Thread.sleep(10000); // delay to not overload endpoint
-            }
-        }
-    }
-
-    private static void doTheWork2(Integer runDurationMins) throws Exception
-    {
-
-        String inputFilePath = Util.getApplicationPath() + File.separator + "json_input" + File.separator + "txt2img.json";
-        String jsonBody = Util.readFileFromPath(inputFilePath);
-
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-        boolean shouldStop[] = {false};
-
-        executor.schedule(() -> {
-            shouldStop[0] = true;
-            System.out.println("Application is shutting down after " + runDurationMins + " minutes.");
-            executor.shutdown();
-        }, runDurationMins, TimeUnit.MINUTES);
-
-        int count = 0;
-        while (!shouldStop[0] && count <= runDurationMins * 60) {
-            count++;
-            System.out.println("Running application... request: " + count);
-
-            try {
-                String response = Util.postJson(apiUrl, jsonBody);
-
-                JsonNode imageNode = Util.getJsonImageNode(response);
-
-                Util.decodeAndSaveImage(imageNode);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            Thread.sleep(10000); // delay to not overload endpoint
-        }
-    }
-
-    private static void doTheWork3() throws Exception
     {
         String inputFilePath = Util.getApplicationPath() + File.separator + "json_input";
         
@@ -121,12 +42,10 @@ public class App
             try {
                 processFilesInFolder(inputFilePath);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         };
-
-        executor.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(task, 0, pollingInterval, TimeUnit.SECONDS);
     }
 
     public static void processFilesInFolder(String folderPath) throws Exception
@@ -143,16 +62,11 @@ public class App
 
                     System.out.println("Calling api...");
 
-                    try {
-                        String response = Util.postJson(apiUrl, jsonBody);
+                    String response = Util.postJson(apiUrl, jsonBody);
 
-                        JsonNode imageNode = Util.getJsonImageNode(response);
+                    JsonNode imageNode = Util.getJsonImageNode(response);
 
-                        Util.decodeAndSaveImage(imageNode);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Util.decodeAndSaveImage(imageNode);
                 }
 
                 if (files.length > 1) {

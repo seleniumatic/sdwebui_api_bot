@@ -26,12 +26,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-     <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <version>5.3.1</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -66,7 +60,7 @@
           </descriptorRefs>
           <archive>
               <manifest>
-                <mainClass>com.example.sd.App</mainClass>
+                <mainClass>com.seleniumatic.sd.App</mainClass>
               </manifest>
           </archive>
       </configuration>

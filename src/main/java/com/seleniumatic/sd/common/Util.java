@@ -2,10 +2,14 @@ package com.seleniumatic.sd.common;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -22,6 +26,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import com.seleniumatic.sd.App;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -64,7 +69,7 @@ public class Util {
         return responseBody;
     }
 
-    public static String getApplicationPath() throws Exception
+    public static String getApplicationPath() throws URISyntaxException
     {
         URL jarLocation = App.class.getProtectionDomain().getCodeSource().getLocation();
         String jarPath = Paths.get(jarLocation.toURI()).getParent().toString();
@@ -83,34 +88,20 @@ public class Util {
         return objectMapper.writeValueAsString(objectMapper.readTree(new File(filePath)));
     }
 
-    public static String readFileFromPath(String filePath) throws Exception
+    public static String readFileFromPath(String filePath) throws JsonProcessingException, IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
         return objectMapper.writeValueAsString(objectMapper.readTree(new File(filePath)));
     }
 
-    // public static String processFilesInFolders(String folderPath)
-    // {
-    //     File folder = new File(folderPath);
-    //     File[] files = folder.listFiles();
-
-    //     if (files != null) {
-    //         if (files[0].isFile()) {
-    //             return files[0].getName();
-    //         }
-    //     }
-
-
-    // }
-
-    public static JsonNode getJsonImageNode(String jsonRespose) throws Exception
+    public static JsonNode getJsonImageNode(String jsonRespose) throws JsonProcessingException
     {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(jsonRespose).get("images");
     }
 
-    public static void decodeAndSaveImage(JsonNode jsonNode) throws Exception
+    public static void decodeAndSaveImage(JsonNode jsonNode) throws FileNotFoundException, URISyntaxException, IOException
     {
         byte[] decodedBytes;
         String filename;
@@ -160,5 +151,34 @@ public class Util {
         String fileName = filenamePrefix + "_" + timestamp + "." + extension;
 
         return fileName;
+    }
+
+    public static void createSampleTxt2ImageFile() throws Exception 
+    {
+        String fileName = "txt2img.json";
+        String sourceFilePath = "sample_txt2img.json";
+        String destinationFilePath = getApplicationPath() + File.separator + "json_input" + File.separator + fileName;
+
+        File file = new File(destinationFilePath);
+
+        // Check if the file already exists
+        if (file.exists()) {
+            System.out.println("Input file already exist.  Will not overwrite.");
+
+        } else {
+            try (InputStream inputStream = AppConfig.class.getClassLoader().getResourceAsStream(sourceFilePath);
+                    OutputStream outputStream = new FileOutputStream(destinationFilePath)) {
+
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                System.out.println("Sample txt2img.json input file created successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
