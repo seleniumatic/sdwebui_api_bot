@@ -16,14 +16,14 @@ public class App {
 
     public static void main( String[] args ) throws Exception
     {
-        setUpFolders();
+        setUp();
 
         System.out.println("Bot running...");
 
         doTheWork();
     }
 
-    private static void setUpFolders() throws Exception
+    private static void setUp() throws Exception
     {
         Util.createApplicationFolder("json_input");
         Util.createApplicationFolder("image_output");
