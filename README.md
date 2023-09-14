@@ -8,5 +8,4 @@ At startup, the app will:
 4. the app will continue to generate and save new images in image_out folder until stopped
 
 #### enhancements:
-* log4j
-* controlnet support
+* controlnet api support
