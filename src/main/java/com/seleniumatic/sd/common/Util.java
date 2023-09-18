@@ -30,8 +30,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class Util {
+
+    static final Logger logger = LogManager.getLogger(Util.class);
+
     public static String sendGET(URL url) throws IOException
     {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -113,7 +119,8 @@ public class Util {
             try (FileOutputStream fos = new FileOutputStream(getApplicationPath() + File.separator + "image_output" + File.separator + filename)) {
                 fos.write(decodedBytes);
                 fos.close();
-                System.out.println(filename + " written successfully.");
+                //System.out.println(filename + " written successfully.");
+                logger.info(filename + " written successfully.");
             }
         }
     }
@@ -124,12 +131,15 @@ public class Util {
 
         if (!folderExists(outputFolderPath)) {
             if (createFolder(outputFolderPath)) {
-                System.out.println(folderName + " folder created successfully.");
+                //System.out.println(folderName + " folder created successfully.");
+                logger.info(folderName + " folder created successfully.");
             } else {
-                System.out.println("Failed to create output folder.");
+                //System.out.println("Failed to create output folder.");
+                logger.info("Failed to create folder: " + folderName);
             }
         } else {
-            System.out.println(folderName + " folder already exists.");
+            //System.out.println(folderName + " folder already exists.");
+            logger.info(folderName + " folder already exists.");
         }
     }
 
@@ -163,7 +173,8 @@ public class Util {
 
         // Check if the file already exists
         if (file.exists()) {
-            System.out.println("Input file already exist.  Will not overwrite.");
+            // System.out.println("Input file already exist.  Will not overwrite.");
+            logger.info("Input file already exist.  Will not overwrite.");
 
         } else {
             try (InputStream inputStream = AppConfig.class.getClassLoader().getResourceAsStream(sourceFilePath);
@@ -175,9 +186,12 @@ public class Util {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
                 }
-                System.out.println("Sample txt2img.json input file created successfully.");
+                // System.out.println("Sample txt2img.json input file created successfully.");
+                logger.info("Sample txt2img.json input file created successfully.");
+
             } catch (IOException e) {
                 e.printStackTrace();
+                logger.error("An error occurred: {}", e.getMessage(), e);
             }
         }
     }
