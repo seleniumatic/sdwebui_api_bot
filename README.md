@@ -7,5 +7,11 @@ At startup, the app will:
 3. create a sample txt2img input file if one doesn't exist in json_input folder
 4. the app will continue to generate and save new images in image_out folder until stopped
 
+Build jar
+mvn clean install
+
+Run
+java -jar <resulting jar file>
+
 #### enhancements:
 * controlnet api support
