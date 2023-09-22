@@ -8,11 +8,9 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.seleniumatic.sd.App;
-
 public class AppConfig {
 
-    static final Logger logger = LogManager.getLogger(App.class);
+    static final Logger logger = LogManager.getLogger(AppConfig.class);
 
     private static Properties properties = new Properties();
 
@@ -37,25 +35,26 @@ public class AppConfig {
                     // Load custom properties from the custom file
                     try (InputStream customInputStream = new FileInputStream(customPropertiesFilePath)) {
                         properties.load(customInputStream);
-                        // System.out.println("Custom properties loaded from: " + customPropertiesFilePath);
-                        logger.info("Custom properties loaded from: " + customPropertiesFilePath);
+                        logger.info("Custom properties loaded from: {}", customPropertiesFilePath);
                     }
                 } else {
                     // Load default properties from the default file
                     try (InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(defaultPropertiesFilePath)) {
                         properties.load(defaultInputStream);
-                        // System.out.println("Default properties loaded from resource: " + defaultPropertiesFilePath);
-                        logger.info("Default properties loaded from resource: " + defaultPropertiesFilePath);
+                        logger.info("Default properties loaded from resource: {}", defaultPropertiesFilePath);
                     }
             }
             // Access and use the properties
             String propertyValue = properties.toString();
-            // System.out.println("Property Value: " + propertyValue);
-            logger.info("Property Value: " + propertyValue);
+            logger.info("Property Value: {}", propertyValue);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("An error occurred: {}", e.getMessage(), e);
         }   
+    }
+
+    private AppConfig() {
+        throw new IllegalStateException("Utility class");
     }
 
     public static String getTxt2ImgEndpoint() {

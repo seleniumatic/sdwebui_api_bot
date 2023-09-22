@@ -1,6 +1,8 @@
 package com.seleniumatic.sd;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,26 +37,27 @@ public class App {
         Util.createSampleTxt2ImageFile();
     }
 
-    private static void doTheWork() throws Exception
+    private static void doTheWork() throws URISyntaxException
     {
         String inputFilePath = Util.getApplicationPath() + File.separator + "json_input";
         
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         Runnable task = () -> {
-            //System.out.println("Checking for new files...");
+
             logger.info("Checking for input files...");
             try {
                 processFilesInFolder(inputFilePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("An error occurred: {}", e.getMessage(), e);
+                Thread.currentThread().interrupt();
             }
         };
         executor.scheduleAtFixedRate(task, 0, pollingInterval, TimeUnit.SECONDS);
     }
 
-    public static void processFilesInFolder(String folderPath) throws Exception
+    public static void processFilesInFolder(String folderPath) throws IOException, InterruptedException, URISyntaxException
     {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
@@ -62,12 +65,10 @@ public class App {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    //System.out.println("Processing file: " + file.getName());
-                    logger.info("Processing file: " + file.getName());
+                    logger.info("Processing file: {}",file.getName());
                     
                     String jsonBody = Util.readFileFromPath(file.getPath());
 
-                    //System.out.println("Calling api...");
                     logger.info("Calling api...");
 
                     String response = Util.postJson(apiUrl, jsonBody);
@@ -78,7 +79,6 @@ public class App {
                 }
 
                 if (files.length > 1) {
-                    //System.out.println("Waiting 10 seconds before proecssing the next file...");
                     logger.info("Waiting 10 seconds before proecssing the next file...");
 
                     Thread.sleep(10000); // delay to not overload endpoint
