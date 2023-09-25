@@ -38,6 +38,10 @@ public class Util {
 
     static final Logger logger = LogManager.getLogger(Util.class);
 
+    private Util() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String sendGET(URL url) throws IOException
     {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -46,7 +50,7 @@ public class Util {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
@@ -70,17 +74,14 @@ public class Util {
         HttpEntity responseEntity = response.getEntity();
 
         // Convert the response entity to a string
-        String responseBody = EntityUtils.toString(responseEntity);
-
-        return responseBody;
+        return EntityUtils.toString(responseEntity);
     }
 
     public static String getApplicationPath() throws URISyntaxException
     {
         URL jarLocation = App.class.getProtectionDomain().getCodeSource().getLocation();
-        String jarPath = Paths.get(jarLocation.toURI()).getParent().toString();
+        return Paths.get(jarLocation.toURI()).getParent().toString();
 
-        return jarPath;
     }
 
     public static String readFileFromJarLocation(String fileName) throws Exception
@@ -119,8 +120,7 @@ public class Util {
             try (FileOutputStream fos = new FileOutputStream(getApplicationPath() + File.separator + "image_output" + File.separator + filename)) {
                 fos.write(decodedBytes);
                 fos.close();
-                //System.out.println(filename + " written successfully.");
-                logger.info(filename + " written successfully.");
+                logger.info("{} written successfully.", filename);
             }
         }
     }
@@ -131,15 +131,12 @@ public class Util {
 
         if (!folderExists(outputFolderPath)) {
             if (createFolder(outputFolderPath)) {
-                //System.out.println(folderName + " folder created successfully.");
-                logger.info(folderName + " folder created successfully.");
+                logger.info("{} folder created successfully.", folderName);
             } else {
-                //System.out.println("Failed to create output folder.");
-                logger.info("Failed to create folder: " + folderName);
+                logger.info("Failed to create folder: {}", folderName);
             }
         } else {
-            //System.out.println(folderName + " folder already exists.");
-            logger.info(folderName + " folder already exists.");
+            logger.info("{} folder already exists.", folderName);
         }
     }
 
@@ -158,9 +155,7 @@ public class Util {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = dateFormat.format(new Date());
 
-        String fileName = filenamePrefix + "_" + timestamp + "." + extension;
-
-        return fileName;
+        return filenamePrefix + "_" + timestamp + "." + extension;
     }
 
     public static void createSampleTxt2ImageFile() throws Exception 
@@ -173,9 +168,7 @@ public class Util {
 
         // Check if the file already exists
         if (file.exists()) {
-            // System.out.println("Input file already exist.  Will not overwrite.");
             logger.info("Input file already exist.  Will not overwrite.");
-
         } else {
             try (InputStream inputStream = AppConfig.class.getClassLoader().getResourceAsStream(sourceFilePath);
                     OutputStream outputStream = new FileOutputStream(destinationFilePath)) {
@@ -186,9 +179,7 @@ public class Util {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
                 }
-                // System.out.println("Sample txt2img.json input file created successfully.");
                 logger.info("Sample txt2img.json input file created successfully.");
-
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error("An error occurred: {}", e.getMessage(), e);

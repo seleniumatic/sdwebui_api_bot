@@ -15,8 +15,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv() {
-                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sdwebui_api_bot -Dsonar.projectName='sdwebui_api_bot'"
+                sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sdwebui_api_bot -Dsonar.projectName='sdwebui_api_bot'"
                 }
             }
         }
