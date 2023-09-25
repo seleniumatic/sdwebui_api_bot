@@ -5,17 +5,18 @@ pipeline {
             args '-v /root/.m2:/root/.m2'
         }
     }
-
     stages {
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarServer') {
+                    sh "mvn clean verify sonar:sonar"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn -version'
                 sh 'mvn clean install'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sdwebui_api_bot -Dsonar.projectName='sdwebui_api_bot'"
             }
         }
     }
