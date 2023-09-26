@@ -29,7 +29,7 @@ public class App {
         doTheWork();
     }
 
-    private static void setUp() throws Exception
+    private static void setUp() throws URISyntaxException
     {
         Util.createApplicationFolder("json_input");
         Util.createApplicationFolder("image_output");
