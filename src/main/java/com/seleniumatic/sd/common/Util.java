@@ -2,7 +2,6 @@ package com.seleniumatic.sd.common;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,18 +60,29 @@ public class Util {
 
     public static String postJson(String apiUrl, String jsonContent) throws IOException 
     {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(apiUrl);
+        HttpEntity responseEntity = null;
+        CloseableHttpClient httpClient = null;
 
-        // Set JSON content
-        StringEntity stringEntity = new StringEntity(jsonContent, ContentType.APPLICATION_JSON);
+        try {
+            httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(apiUrl);
 
-        httpPost.setEntity(stringEntity);
+            // Set JSON content
+            StringEntity stringEntity = new StringEntity(jsonContent, ContentType.APPLICATION_JSON);
 
-        // Execute the request
-        HttpResponse response = httpClient.execute(httpPost);
-        HttpEntity responseEntity = response.getEntity();
+            httpPost.setEntity(stringEntity);
 
+            // Execute the request
+            HttpResponse response = httpClient.execute(httpPost);
+            responseEntity = response.getEntity();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("An error occurred: {}", e.getMessage(), e);
+        } finally {
+            if (httpClient != null) {
+                httpClient.close();
+            }
+        }
         // Convert the response entity to a string
         return EntityUtils.toString(responseEntity);
     }
@@ -84,7 +94,7 @@ public class Util {
 
     }
 
-    public static String readFileFromJarLocation(String fileName) throws Exception
+    public static String readFileFromJarLocation(String fileName) throws URISyntaxException, IOException
     {
         String inputFilePath = getApplicationPath() + File.separator + "json_input";
         
@@ -95,7 +105,7 @@ public class Util {
         return objectMapper.writeValueAsString(objectMapper.readTree(new File(filePath)));
     }
 
-    public static String readFileFromPath(String filePath) throws JsonProcessingException, IOException
+    public static String readFileFromPath(String filePath) throws IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -108,7 +118,7 @@ public class Util {
         return objectMapper.readTree(jsonRespose).get("images");
     }
 
-    public static void decodeAndSaveImage(JsonNode jsonNode) throws FileNotFoundException, URISyntaxException, IOException
+    public static void decodeAndSaveImage(JsonNode jsonNode) throws URISyntaxException, IOException
     {
         byte[] decodedBytes;
         String filename;
@@ -119,13 +129,12 @@ public class Util {
 
             try (FileOutputStream fos = new FileOutputStream(getApplicationPath() + File.separator + "image_output" + File.separator + filename)) {
                 fos.write(decodedBytes);
-                fos.close();
                 logger.info("{} written successfully.", filename);
             }
         }
     }
 
-    public static void createApplicationFolder(String folderName) throws Exception 
+    public static void createApplicationFolder(String folderName) throws URISyntaxException  
     {
         String outputFolderPath = getApplicationPath() + File.separator + folderName;
 
@@ -158,7 +167,7 @@ public class Util {
         return filenamePrefix + "_" + timestamp + "." + extension;
     }
 
-    public static void createSampleTxt2ImageFile() throws Exception 
+    public static void createSampleTxt2ImageFile() throws URISyntaxException 
     {
         String fileName = "txt2img.json";
         String sourceFilePath = "sample_txt2img.json";
