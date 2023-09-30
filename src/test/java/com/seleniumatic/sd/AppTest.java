@@ -8,8 +8,7 @@ public class AppTest
 {
 
     @Test
-    public void shouldAnswerWithTrue()
-    {
+    public void shouldAnswerWithTrue() {
         assertTrue( true );
     }
 }

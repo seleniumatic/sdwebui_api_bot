@@ -1,7 +1,7 @@
 package com.seleniumatic.sd.common;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -31,37 +31,39 @@ public class AppConfig {
 
                 // Check if the custom properties file exists
                 File customPropertiesFile = new File(customPropertiesFilePath);
+                
                 if (customPropertiesFile.exists()) {
-                    // Load custom properties from the custom file
-                    try (InputStream customInputStream = new FileInputStream(customPropertiesFilePath)) {
-                        properties.load(customInputStream);
-                        logger.info("Custom properties loaded from: {}", customPropertiesFilePath);
-                    }
+                    logger.info("Loading custom properties: {}", customPropertiesFileName);
+                    loadPropertiesFromFile(customPropertiesFileName);
                 } else {
-                    // Load default properties from the default file
-                    try (InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(defaultPropertiesFilePath)) {
-                        properties.load(defaultInputStream);
-                        logger.info("Default properties loaded from resource: {}", defaultPropertiesFilePath);
-                    }
-            }
+                    logger.info("Loading default properties: {}", defaultPropertiesFileName);
+                    loadPropertiesFromFile(defaultPropertiesFilePath);
+                }
             // Access and use the properties
             String propertyValue = properties.toString();
-            logger.info("Property Value: {}", propertyValue);
+            logger.info("Property Values: {}", propertyValue);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("An error occurred: {}", e.getMessage(), e);
+            logger.error("An error occurred while attempting to load app properties: {}", e.getMessage(), e);
         }   
     }
 
-    private AppConfig() {
-        throw new IllegalStateException("Utility class");
+    private AppConfig() {}
+
+    private static void loadPropertiesFromFile(String propertiesFilePath) throws IOException {
+        try (InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(propertiesFilePath)) {
+            properties.load(defaultInputStream);
+        }
     }
 
     public static String getTxt2ImgEndpoint() {
         return properties.getProperty("txt2img.endpoint");
     }
 
-    public static Integer getPollingIntervalSec() {
-        return Integer.parseInt(properties.getProperty("polling.interval.sec"));
+    public static Integer getApiRequestIntervalSeconds() {
+        return Integer.parseInt(properties.getProperty("api.request.interval.seconds"));
+    }
+
+     public static Integer getFileProcessingIntervalSeconds() {
+        return Integer.parseInt(properties.getProperty("file.process.interval.seconds"));
     }
 }

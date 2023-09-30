@@ -17,8 +17,9 @@ import org.apache.logging.log4j.Logger;
 public class App {
 
     static final Logger logger = LogManager.getLogger(App.class);
-    static Integer pollingInterval = AppConfig.getPollingIntervalSec();
-    static String apiUrl = AppConfig.getTxt2ImgEndpoint();
+    static Integer INTERVAL_API_REQUEST = AppConfig.getApiRequestIntervalSeconds();
+    static String API_URL = AppConfig.getTxt2ImgEndpoint();
+    static Integer INTERVAL_FILE_PROCESSING = AppConfig.getFileProcessingIntervalSeconds();
 
     public static void main( String[] args ) throws Exception
     {
@@ -41,8 +42,6 @@ public class App {
     {
         String inputFilePath = Util.getApplicationPath() + File.separator + "json_input";
         
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-
         Runnable task = () -> {
 
             logger.info("Checking for input files...");
@@ -50,11 +49,13 @@ public class App {
                 processFilesInFolder(inputFilePath);
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error("An error occurred: {}", e.getMessage(), e);
+                logger.error("An error occurred while processing input file: {}", e.getMessage(), e);
                 Thread.currentThread().interrupt();
             }
         };
-        executor.scheduleAtFixedRate(task, 0, pollingInterval, TimeUnit.SECONDS);
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(task, 0, INTERVAL_API_REQUEST, TimeUnit.SECONDS);
     }
 
     public static void processFilesInFolder(String folderPath) throws IOException, InterruptedException, URISyntaxException
@@ -69,9 +70,9 @@ public class App {
                     
                     String jsonBody = Util.readFileFromPath(file.getPath());
 
-                    logger.info("Calling api...");
+                    logger.info("Calling URL: {} ...", API_URL);
 
-                    String response = Util.postJson(apiUrl, jsonBody);
+                    String response = Util.httpPostRequest(API_URL, jsonBody);
 
                     JsonNode imageNode = Util.getJsonImageNode(response);
 
@@ -79,9 +80,9 @@ public class App {
                 }
 
                 if (files.length > 1) {
-                    logger.info("Waiting 10 seconds before proecssing the next file...");
+                    logger.info("Waiting {} seconds before proecssing the next file...", INTERVAL_API_REQUEST);
 
-                    Thread.sleep(10000); // delay to not overload endpoint
+                    Thread.sleep(INTERVAL_FILE_PROCESSING); // delay to not overload endpoint
                 }
             }
         }

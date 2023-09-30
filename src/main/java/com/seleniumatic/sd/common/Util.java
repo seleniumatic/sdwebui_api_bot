@@ -8,21 +8,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.net.http.HttpResponse;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import com.seleniumatic.sd.App;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,54 +33,53 @@ public class Util {
 
     static final Logger logger = LogManager.getLogger(Util.class);
 
-    private Util() {
-        throw new IllegalStateException("Utility class");
-    }
+    private Util() {}
 
-    public static String sendGET(URL url) throws IOException
+    public static String httpGetRequest(String url) throws URISyntaxException
     {
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+        HttpClient httpClient = HttpClient.newHttpClient();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(new URI(url))
+            .header("Content-Type", "application/json")
+            .GET()
+            .build();
 
-        String inputLine;
-        StringBuilder content = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
-
-        return content.toString();
-    }
-
-    public static String postJson(String apiUrl, String jsonContent) throws IOException 
-    {
-        HttpEntity responseEntity = null;
-        CloseableHttpClient httpClient = null;
+        String responseBody = null;
 
         try {
-            httpClient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost(apiUrl);
-
-            // Set JSON content
-            StringEntity stringEntity = new StringEntity(jsonContent, ContentType.APPLICATION_JSON);
-
-            httpPost.setEntity(stringEntity);
-
-            // Execute the request
-            HttpResponse response = httpClient.execute(httpPost);
-            responseEntity = response.getEntity();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("An error occurred: {}", e.getMessage(), e);
-        } finally {
-            if (httpClient != null) {
-                httpClient.close();
-            }
+            // Send the GET request and retrieve the response
+            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+            responseBody = response.body();
+        } catch (InterruptedException|IOException e) {
+            logger.error("An error occured while making Http GET request: {}", e.getMessage(), e);
+            Thread.currentThread().interrupt();
         }
-        // Convert the response entity to a string
-        return EntityUtils.toString(responseEntity);
+
+        return responseBody;
+    }
+
+    public static String httpPostRequest(String url, String jsonBody) throws URISyntaxException
+    {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(new URI(url))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+            .build();
+
+        String responseBody = null;
+
+        try {
+            // Send the POST request and retrieve the response
+            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+            responseBody = response.body();
+        } catch (InterruptedException|IOException e) {
+            logger.error("An error occured while making Http POST request: {}", e.getMessage(), e);
+            Thread.currentThread().interrupt();
+        }
+
+        return responseBody;
     }
 
     public static String getApplicationPath() throws URISyntaxException
@@ -191,7 +186,7 @@ public class Util {
                 logger.info("Sample txt2img.json input file created successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
-                logger.error("An error occurred: {}", e.getMessage(), e);
+                logger.error("An error occurred while attemppting to create sample input file: {}", e.getMessage(), e);
             }
         }
     }
