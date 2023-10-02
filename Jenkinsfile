@@ -19,11 +19,11 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        post {
-            always {
-                junit 'test-results.xml'
-                archiveArtifacts 'target/*.jar'
-            }
+    }
+    post {
+        always {
+            junit 'test-results.xml'
+            archiveArtifacts 'target/*.jar'
         }
     }
 }
