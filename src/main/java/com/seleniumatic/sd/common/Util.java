@@ -5,13 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.net.http.HttpResponse;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -31,52 +26,6 @@ public class Util {
     static final Logger logger = LogManager.getLogger(Util.class);
 
     private Util() {}
-
-    // public static String httpGetRequest(String url) throws URISyntaxException
-    // {
-    //     HttpClient httpClient = HttpClient.newHttpClient();
-    //     HttpRequest request = HttpRequest.newBuilder()
-    //         .uri(new URI(url))
-    //         .header("Content-Type", "application/json")
-    //         .GET()
-    //         .build();
-
-    //     String responseBody = null;
-
-    //     try {
-    //         // Send the GET request and retrieve the response
-    //         HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    //         responseBody = response.body();
-    //     } catch (InterruptedException|IOException e) {
-    //         logger.error("An error occured while making Http GET request: {}", e.getMessage(), e);
-    //         Thread.currentThread().interrupt();
-    //     }
-
-    //     return responseBody;
-    // }
-
-    // public static String httpPostRequest(String url, String jsonBody) throws URISyntaxException
-    // {
-    //     HttpClient httpClient = HttpClient.newHttpClient();
-    //     HttpRequest request = HttpRequest.newBuilder()
-    //         .uri(new URI(url))
-    //         .header("Content-Type", "application/json")
-    //         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-    //         .build();
-
-    //     String responseBody = null;
-
-    //     try {
-    //         // Send the POST request and retrieve the response
-    //         HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    //         responseBody = response.body();
-    //     } catch (InterruptedException|IOException e) {
-    //         logger.error("An error occured while making Http POST request: {}", e.getMessage(), e);
-    //         Thread.currentThread().interrupt();
-    //     }
-
-    //     return responseBody;
-    // }
 
     public static String getApplicationPath() throws URISyntaxException
     {
