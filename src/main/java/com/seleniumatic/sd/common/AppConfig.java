@@ -40,8 +40,7 @@ public class AppConfig {
                     loadPropertiesFromFile(defaultPropertiesFilePath);
                 }
             // Access and use the properties
-            String propertyValue = properties.toString();
-            logger.info("Property Values: {}", propertyValue);
+            logger.info("Property Values: {}", properties);
         } catch (Exception e) {
             logger.error("An error occurred while attempting to load app properties: {}", e.getMessage(), e);
         }   
