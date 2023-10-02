@@ -4,14 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
