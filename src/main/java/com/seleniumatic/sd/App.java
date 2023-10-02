@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.seleniumatic.sd.common.AppConfig;
+import com.seleniumatic.sd.common.SdApiClient;
 import com.seleniumatic.sd.common.Util;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -62,6 +63,8 @@ public class App {
     {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
+
+        SdApiClient sdApiClient;
         
         if (files != null) {
             for (File file : files) {
@@ -69,10 +72,10 @@ public class App {
                     logger.info("Processing file: {}",file.getName());
                     
                     String jsonBody = Util.readFileFromPath(file.getPath());
+                    sdApiClient = new SdApiClient(API_URL, jsonBody);
 
                     logger.info("Calling URL: {} ...", API_URL);
-
-                    String response = Util.httpPostRequest(API_URL, jsonBody);
+                    String response = sdApiClient.httpPostRequest();
 
                     JsonNode imageNode = Util.getJsonImageNode(response);
 

@@ -48,7 +48,7 @@ public class AppConfig {
 
     private AppConfig() {}
 
-    private static void loadPropertiesFromFile(String propertiesFilePath) throws IOException {
+    public static void loadPropertiesFromFile(String propertiesFilePath) throws IOException {
         try (InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(propertiesFilePath)) {
             properties.load(defaultInputStream);
         }

@@ -32,51 +32,51 @@ public class Util {
 
     private Util() {}
 
-    public static String httpGetRequest(String url) throws URISyntaxException
-    {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(new URI(url))
-            .header("Content-Type", "application/json")
-            .GET()
-            .build();
+    // public static String httpGetRequest(String url) throws URISyntaxException
+    // {
+    //     HttpClient httpClient = HttpClient.newHttpClient();
+    //     HttpRequest request = HttpRequest.newBuilder()
+    //         .uri(new URI(url))
+    //         .header("Content-Type", "application/json")
+    //         .GET()
+    //         .build();
 
-        String responseBody = null;
+    //     String responseBody = null;
 
-        try {
-            // Send the GET request and retrieve the response
-            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-            responseBody = response.body();
-        } catch (InterruptedException|IOException e) {
-            logger.error("An error occured while making Http GET request: {}", e.getMessage(), e);
-            Thread.currentThread().interrupt();
-        }
+    //     try {
+    //         // Send the GET request and retrieve the response
+    //         HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+    //         responseBody = response.body();
+    //     } catch (InterruptedException|IOException e) {
+    //         logger.error("An error occured while making Http GET request: {}", e.getMessage(), e);
+    //         Thread.currentThread().interrupt();
+    //     }
 
-        return responseBody;
-    }
+    //     return responseBody;
+    // }
 
-    public static String httpPostRequest(String url, String jsonBody) throws URISyntaxException
-    {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(new URI(url))
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-            .build();
+    // public static String httpPostRequest(String url, String jsonBody) throws URISyntaxException
+    // {
+    //     HttpClient httpClient = HttpClient.newHttpClient();
+    //     HttpRequest request = HttpRequest.newBuilder()
+    //         .uri(new URI(url))
+    //         .header("Content-Type", "application/json")
+    //         .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+    //         .build();
 
-        String responseBody = null;
+    //     String responseBody = null;
 
-        try {
-            // Send the POST request and retrieve the response
-            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-            responseBody = response.body();
-        } catch (InterruptedException|IOException e) {
-            logger.error("An error occured while making Http POST request: {}", e.getMessage(), e);
-            Thread.currentThread().interrupt();
-        }
+    //     try {
+    //         // Send the POST request and retrieve the response
+    //         HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+    //         responseBody = response.body();
+    //     } catch (InterruptedException|IOException e) {
+    //         logger.error("An error occured while making Http POST request: {}", e.getMessage(), e);
+    //         Thread.currentThread().interrupt();
+    //     }
 
-        return responseBody;
-    }
+    //     return responseBody;
+    // }
 
     public static String getApplicationPath() throws URISyntaxException
     {
