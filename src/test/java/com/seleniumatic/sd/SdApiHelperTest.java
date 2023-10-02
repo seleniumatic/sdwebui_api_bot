@@ -1,16 +1,8 @@
 package com.seleniumatic.sd;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +12,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.seleniumatic.sd.common.SdApiClient;
-import com.seleniumatic.sd.common.Util;
 
 public class SdApiHelperTest {
 
