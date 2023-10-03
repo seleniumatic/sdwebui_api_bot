@@ -18,6 +18,7 @@ public class UtilTest {
     @Before
     public void setUp() throws URISyntaxException {
         Util.createApplicationFolder("image_output");
+        Util.createApplicationFolder("json_input");
     }
 
     @Test
