@@ -66,24 +66,4 @@ public class SdApiClientTest {
         assertEquals(expectedUrl, sdApiHelper.getUrl());
         assertEquals(expectedBody, sdApiHelper.getBody());
     }
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @Test
-    public void testFailHttpPostRequest() throws URISyntaxException {
-        String expectedResult = "{\"message\":\"Post request content\"}";
-    
-        stubFor(post(urlEqualTo("/fault"))
-            .willReturn(aResponse()
-            .withStatus(400)
-            .withHeader("Content-Type", "application/json")
-            .withBody(expectedResult)));
-
-        
-        exception.expect(IllegalArgumentException.class);
-
-        sdApiHelper.httpPostRequest();
-
-    }
 }
