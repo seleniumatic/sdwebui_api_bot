@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestUtil {
     public static String getTestResourceFileContent(String filename) throws IOException {
             
-       InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(filename);
+        InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(filename);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
