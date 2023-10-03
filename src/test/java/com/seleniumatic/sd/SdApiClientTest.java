@@ -1,12 +1,15 @@
 package com.seleniumatic.sd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -15,14 +18,14 @@ import com.seleniumatic.sd.common.SdApiClient;
 
 public class SdApiClientTest {
 
-    private SdApiClient SdApiHelper;
+    private SdApiClient sdApiHelper;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8089);
 
     @Before
     public void setup() {
-        SdApiHelper = new SdApiClient("http://localhost:8089/data", "{\"prompt\": \"cat\"}");
+        sdApiHelper = new SdApiClient("http://localhost:8089/data", "{\"prompt\": \"cat\"}");
     }
 
     @Test
@@ -35,7 +38,7 @@ public class SdApiClientTest {
             .withHeader("Content-Type", "application/json")
             .withBody(expectedResult)));
 
-        String actualResult = SdApiHelper.httpGetRequest();
+        String actualResult = sdApiHelper.httpGetRequest();
        
         assertEquals(expectedResult, actualResult);
     }
@@ -50,8 +53,37 @@ public class SdApiClientTest {
             .withHeader("Content-Type", "application/json")
             .withBody(expectedResult)));
 
-        String actualResult = SdApiHelper.httpPostRequest();
+        String actualResult = sdApiHelper.httpPostRequest();
        
         assertEquals(expectedResult, actualResult);
-    }   
+    }
+    
+    @Test
+    public void testSdApiClientProperty() {
+        String expectedUrl = "http://localhost:8089/data";
+        String expectedBody = "{\"prompt\": \"cat\"}";
+
+        assertEquals(expectedUrl, sdApiHelper.getUrl());
+        assertEquals(expectedBody, sdApiHelper.getBody());
+    }
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void testFailHttpPostRequest() throws URISyntaxException {
+        String expectedResult = "{\"message\":\"Post request content\"}";
+    
+        stubFor(post(urlEqualTo("/fault"))
+            .willReturn(aResponse()
+            .withStatus(400)
+            .withHeader("Content-Type", "application/json")
+            .withBody(expectedResult)));
+
+        
+        exception.expect(IllegalArgumentException.class);
+
+        sdApiHelper.httpPostRequest();
+
+    }
 }
