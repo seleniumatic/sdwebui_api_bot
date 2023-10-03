@@ -21,7 +21,7 @@ pipeline {
         }
     }
     post {
-        always {
+        always('Publish Report') {
             junit '**/target/surefire-reports/TEST-*.xml'
             archiveArtifacts 'target/*.jar'
         }

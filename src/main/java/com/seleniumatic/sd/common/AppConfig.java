@@ -25,7 +25,7 @@ public class AppConfig {
         {try 
             {
                 // Get the location of the currently executing JAR file
-                String jarDirectory = Util.getApplicationPath();
+                String jarDirectory = Util.getAppExecutionPath();
                 String configFolderPath = jarDirectory  + File.separator + customPropertiesFolderName;
                 customPropertiesFilePath = configFolderPath + File.separator + customPropertiesFileName;
 
@@ -34,7 +34,7 @@ public class AppConfig {
                 
                 if (customPropertiesFile.exists()) {
                     logger.info("Loading custom properties: {}", customPropertiesFileName);
-                    loadPropertiesFromFile(customPropertiesFileName);
+                    loadPropertiesFromFile(customPropertiesFilePath);
                 } else {
                     logger.info("Loading default properties: {}", defaultPropertiesFileName);
                     loadPropertiesFromFile(defaultPropertiesFilePath);

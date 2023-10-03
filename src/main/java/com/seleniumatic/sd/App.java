@@ -41,7 +41,7 @@ public class App {
 
     private static void doTheWork() throws URISyntaxException
     {
-        String inputFilePath = Util.getApplicationPath() + File.separator + "json_input";
+        String inputFilePath = Util.getAppExecutionPath() + File.separator + "json_input";
         
         Runnable task = () -> {
 
@@ -71,7 +71,7 @@ public class App {
                 if (file.isFile()) {
                     logger.info("Processing file: {}",file.getName());
                     
-                    String jsonBody = Util.readFileFromPath(file.getPath());
+                    String jsonBody = Util.readJsonFileFromPath(file.getPath());
                     sdApiClient = new SdApiClient(API_URL, jsonBody);
 
                     logger.info("Calling URL: {} ...", API_URL);

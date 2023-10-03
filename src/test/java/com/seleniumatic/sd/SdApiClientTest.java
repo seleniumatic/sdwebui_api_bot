@@ -13,7 +13,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.seleniumatic.sd.common.SdApiClient;
 
-public class SdApiHelperTest {
+public class SdApiClientTest {
 
     private SdApiClient SdApiHelper;
 
@@ -43,8 +43,6 @@ public class SdApiHelperTest {
     @Test
     public void testHttpPostRequest() throws URISyntaxException {
         String expectedResult = "{\"message\":\"Post request content\"}";
-
-        System.out.println("test2");
 
         stubFor(post(urlEqualTo("/data"))
             .willReturn(aResponse()

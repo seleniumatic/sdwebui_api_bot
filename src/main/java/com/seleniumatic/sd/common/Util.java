@@ -27,56 +27,49 @@ public class Util {
 
     private Util() {}
 
-    public static String getApplicationPath() throws URISyntaxException
+    public static String getAppExecutionPath() throws URISyntaxException
     {
         URL jarLocation = App.class.getProtectionDomain().getCodeSource().getLocation();
         return Paths.get(jarLocation.toURI()).getParent().toString();
 
     }
 
-    public static String readFileFromJarLocation(String fileName) throws URISyntaxException, IOException
-    {
-        String inputFilePath = getApplicationPath() + File.separator + "json_input";
-        
-        String filePath = Paths.get(inputFilePath, fileName).toString();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        return objectMapper.writeValueAsString(objectMapper.readTree(new File(filePath)));
-    }
-
-    public static String readFileFromPath(String filePath) throws IOException
+    public static String readJsonFileFromPath(String filePath) throws IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
         return objectMapper.writeValueAsString(objectMapper.readTree(new File(filePath)));
     }
 
-    public static JsonNode getJsonImageNode(String jsonRespose) throws JsonProcessingException
+    public static JsonNode getJsonImageNode(String jsonContent) throws JsonProcessingException
     {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readTree(jsonRespose).get("images");
+        return objectMapper.readTree(jsonContent).get("images");
     }
 
-    public static void decodeAndSaveImage(JsonNode jsonNode) throws URISyntaxException, IOException
+    public static String decodeAndSaveImage(JsonNode jsonNode) throws URISyntaxException, IOException
     {
         byte[] decodedBytes;
-        String filename;
+        String filename = "";
+        String filePath = "";
 
         for (JsonNode image : jsonNode) {
             decodedBytes = Base64.getDecoder().decode(image.asText());
             filename = generateUniqueFileName("sdapi", "png");
+            filePath = getAppExecutionPath() + File.separator + "image_output" + File.separator + filename;
 
-            try (FileOutputStream fos = new FileOutputStream(getApplicationPath() + File.separator + "image_output" + File.separator + filename)) {
+            try (FileOutputStream fos = new FileOutputStream(getAppExecutionPath() + File.separator + "image_output" + File.separator + filename)) {
                 fos.write(decodedBytes);
                 logger.info("{} written successfully.", filename);
             }
         }
+
+        return filePath;
     }
 
     public static void createApplicationFolder(String folderName) throws URISyntaxException  
     {
-        String outputFolderPath = getApplicationPath() + File.separator + folderName;
+        String outputFolderPath = getAppExecutionPath() + File.separator + folderName;
 
         if (!folderExists(outputFolderPath)) {
             if (createFolder(outputFolderPath)) {
@@ -111,7 +104,7 @@ public class Util {
     {
         String fileName = "txt2img.json";
         String sourceFilePath = "sample_txt2img.json";
-        String destinationFilePath = getApplicationPath() + File.separator + "json_input" + File.separator + fileName;
+        String destinationFilePath = getAppExecutionPath() + File.separator + "json_input" + File.separator + fileName;
 
         File file = new File(destinationFilePath);
 

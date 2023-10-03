@@ -1,10 +1,15 @@
 package com.seleniumatic.sd.common;
 
+import java.net.URISyntaxException;
+
 public class TestUtil {
-    public static String GetFilePath(String relativeFilePath) {
-    
-        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+
+    static String testResourcesRelativePath = "/test-classes/com/seleniumatic/sd/resources/";
+
+    public static String getTestResourceFilePath() throws URISyntaxException {
+            
+        String resourcesPath = Util.getAppExecutionPath() + testResourcesRelativePath;
         
-        return rootPath + relativeFilePath;
+        return resourcesPath;
     }
 }
