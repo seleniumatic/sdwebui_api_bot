@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,8 +14,14 @@ import com.seleniumatic.sd.common.TestUtil;
 import com.seleniumatic.sd.common.Util;
 
 public class UtilTest {
+
+    @Before
+    public void setUp() throws URISyntaxException {
+        Util.createApplicationFolder("image_output");
+    }
+
     @Test
-    public void testImageFileCreation() throws URISyntaxException, IOException{
+    public void testImageFileCreation() throws URISyntaxException, IOException {
 
         String response = TestUtil.getTestResourceFileContent("sample_txt2img_response.json");
         JsonNode imageNode = Util.getJsonImageNode(response);
