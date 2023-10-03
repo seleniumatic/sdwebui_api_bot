@@ -16,18 +16,12 @@ public class UtilTest {
     @Test
     public void testImageFileCreation() throws URISyntaxException, IOException{
 
-        String testFilePath = TestUtil.getTestResourceFilePath() + "sample_txt2img_response.json";
-
-        String response = Util.readJsonFileFromPath(testFilePath);
-
+        String response = TestUtil.getTestResourceFileContent("sample_txt2img_response.json");
         JsonNode imageNode = Util.getJsonImageNode(response);
-
         String expectedFilePath = Util.decodeAndSaveImage(imageNode);
-
-        System.out.println(imageNode);
-
         File expectedImageFile = new File(expectedFilePath);
 
         assertTrue(expectedImageFile.exists());
     }
 }
+

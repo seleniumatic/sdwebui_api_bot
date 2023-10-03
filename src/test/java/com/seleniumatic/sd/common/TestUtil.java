@@ -1,15 +1,17 @@
 package com.seleniumatic.sd.common;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestUtil {
-
-    static String testResourcesRelativePath = "/test-classes/com/seleniumatic/sd/resources/";
-
-    public static String getTestResourceFilePath() throws URISyntaxException {
+    public static String getTestResourceFileContent(String filename) throws IOException {
             
-        String resourcesPath = Util.getAppExecutionPath() + testResourcesRelativePath;
-        
-        return resourcesPath;
+       InputStream defaultInputStream = AppConfig.class.getClassLoader().getResourceAsStream(filename);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.writeValueAsString(objectMapper.readTree(defaultInputStream));
     }
 }
