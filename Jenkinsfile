@@ -9,7 +9,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarServer') {
-                    sh "mvn clean verify sonar:sonar"
+                    sh "mvn clean verify sonar:sonar -Pcoverage"
                 }
             }
         }
@@ -18,6 +18,12 @@ pipeline {
                 sh 'mvn -version'
                 sh 'mvn clean install'
             }
+        }
+    }
+    post {
+        always('Publish Report') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts 'target/*.jar'
         }
     }
 }
