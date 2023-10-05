@@ -100,7 +100,7 @@ public class Util {
         return filenamePrefix + "_" + timestamp + "." + extension;
     }
 
-    public static void createSampleTxt2ImageFile() throws URISyntaxException 
+    public static File createSampleTxt2ImageFile() throws URISyntaxException 
     {
         String fileName = "txt2img.json";
         String sourceFilePath = "sample_txt2img.json";
@@ -127,5 +127,7 @@ public class Util {
                 logger.error("An error occurred while attemppting to create sample input file: {}", e.getMessage(), e);
             }
         }
+
+        return file;
     }
 }

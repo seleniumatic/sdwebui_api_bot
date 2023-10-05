@@ -1,19 +1,15 @@
 package com.seleniumatic.sd;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.seleniumatic.sd.common.SdApiClient;
 
 public class SdApiClientTest {
