@@ -5,7 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import java.net.URISyntaxException;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -19,8 +19,8 @@ public class SdApiClientTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8089);
 
-    @BeforeClass
-    public void setup() {
+    @Before
+    public void staticsetup() {
         sdApiHelper = new SdApiClient("http://localhost:8089/data", "{\"prompt\": \"cat\"}");
     }
 
