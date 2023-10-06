@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -22,7 +22,7 @@ public class SdServiceTest {
     private HttpClient mockHttpClient;
     private HttpResponse<String> mockHttpResponse;
 
-    @Before
+    @BeforeClass
     @SuppressWarnings("unchecked")
     public void setup() {
         mockHttpClient = Mockito.mock(HttpClient.class);

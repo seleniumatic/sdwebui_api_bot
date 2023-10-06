@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,7 +15,7 @@ import com.seleniumatic.sd.common.Util;
 
 public class UtilTest {
 
-    @Before
+    @BeforeClass
     public void setUp() throws URISyntaxException {
         Util.createApplicationFolder("image_output");
         Util.createApplicationFolder("json_input");

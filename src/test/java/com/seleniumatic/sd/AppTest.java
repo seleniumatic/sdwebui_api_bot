@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -21,8 +21,9 @@ public class AppTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8089);
 
-    @Before
+    @BeforeClass
     public void setup() throws URISyntaxException, IOException {
+        Util.createApplicationFolder("image_output");
         Util.createApplicationFolder("json_input");
         Util.createSampleTxt2ImageFile();
 
