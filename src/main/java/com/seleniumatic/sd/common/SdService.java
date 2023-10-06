@@ -11,45 +11,40 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SdApiClient {
+public class SdService {
+    static final Logger logger = LogManager.getLogger(SdService.class);
 
-    static final Logger logger = LogManager.getLogger(SdApiClient.class);
-
+    
+    private final HttpClient httpClient;
     private String url;
     private String body;
+
+
+    public SdService(HttpClient httpClient, String url, String body) {
+        this.httpClient = httpClient;
+        this.url = url;
+        this.body = body;
+    }
 
     public String getUrl() {
         return url;
     }
-
     public void setUrl(String url) {
         this.url = url;
     }
-
     public String getBody() {
         return body;
     }
-
     public void setBody(String body) {
         this.body = body;
     }
 
-    public SdApiClient(String url) {
-        this.url = url;
-    }
-
-    public SdApiClient(String url, String body) {
-        this.url = url;
-        this.body = body;
-    }
-
-    public String httpGetRequest() throws URISyntaxException {
-        HttpClient httpClient = HttpClient.newHttpClient();
+    public String get() throws URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(new URI(this.url))
-            .header("Content-Type", "application/json")
-            .GET()
-            .build();
+                .uri(new URI(this.url))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
 
         String responseBody = null;
 
@@ -65,9 +60,8 @@ public class SdApiClient {
         return responseBody;
     }
 
-    public String httpPostRequest() throws URISyntaxException
+    public String post() throws URISyntaxException
     {
-        HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
             .uri(new URI(this.url))
             .header("Content-Type", "application/json")

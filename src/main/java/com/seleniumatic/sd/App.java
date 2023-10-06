@@ -3,12 +3,13 @@ package com.seleniumatic.sd;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.seleniumatic.sd.common.AppConfig;
-import com.seleniumatic.sd.common.SdApiClient;
+import com.seleniumatic.sd.common.SdService;
 import com.seleniumatic.sd.common.Util;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -42,12 +43,15 @@ public class App {
     private static void doTheWork() throws URISyntaxException
     {
         String inputFilePath = Util.getAppExecutionPath() + File.separator + "json_input";
-        
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        SdService sdService = new SdService(httpClient, API_URL, "");
+
         Runnable task = () -> {
 
             logger.info("Checking for input files...");
             try {
-                processFilesInFolder(inputFilePath);
+                inputFileProcessor(sdService, inputFilePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("An error occurred while processing input file: {}", e.getMessage(), e);
@@ -59,27 +63,27 @@ public class App {
         executor.scheduleAtFixedRate(task, 0, INTERVAL_API_REQUEST, TimeUnit.SECONDS);
     }
 
-    public static void processFilesInFolder(String folderPath) throws IOException, InterruptedException, URISyntaxException
+    public static String inputFileProcessor(SdService sdService, String folderPath) throws IOException, InterruptedException, URISyntaxException
     {
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
 
-        SdApiClient sdApiClient;
-        
+        String newFilePath = "";
+       
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
                     logger.info("Processing file: {}",file.getName());
                     
                     String jsonBody = Util.readJsonFileFromPath(file.getPath());
-                    sdApiClient = new SdApiClient(API_URL, jsonBody);
+                    sdService.setBody(jsonBody);
 
                     logger.info("Calling URL: {} ...", API_URL);
-                    String response = sdApiClient.httpPostRequest();
+                    String response = sdService.post();
 
                     JsonNode imageNode = Util.getJsonImageNode(response);
 
-                    Util.decodeAndSaveImage(imageNode);
+                    newFilePath = Util.decodeAndSaveImage(imageNode);
                 }
 
                 if (files.length > 1) {
@@ -89,5 +93,7 @@ public class App {
                 }
             }
         }
+
+        return newFilePath;
     }
 }
