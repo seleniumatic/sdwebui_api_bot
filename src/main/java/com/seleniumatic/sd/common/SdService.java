@@ -48,6 +48,7 @@ public class SdService {
 
         String responseBody = null;
 
+        logger.info("Calling URL: {} ...", this.url);
         try {
             // Send the GET request and retrieve the response
             HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
@@ -56,7 +57,6 @@ public class SdService {
             logger.error("An error occured while making Http GET request: {}", e.getMessage(), e);
             Thread.currentThread().interrupt();
         }
-
         return responseBody;
     }
 
@@ -70,6 +70,7 @@ public class SdService {
 
         String responseBody = null;
 
+        logger.info("Calling URL: {} ...", this.url);
         try {
             // Send the POST request and retrieve the response
             HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
@@ -78,7 +79,6 @@ public class SdService {
             logger.error("An error occured while making Http POST request: {}", e.getMessage(), e);
             Thread.currentThread().interrupt();
         }
-
         return responseBody;
     }
 }
