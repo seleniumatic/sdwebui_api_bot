@@ -72,5 +72,4 @@ public class AppTest {
         assertTrue(new File(conifgFilePath).exists());
         assertTrue(new File(sampleFilePath).exists());
     }
-
 }

@@ -1,5 +1,6 @@
 package com.seleniumatic.sd;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -16,16 +17,18 @@ import com.seleniumatic.sd.common.TestUtil;
 import com.seleniumatic.sd.common.Util;
 
 public class JsonToImageWriterTest {
+    String testOutputFilePath;
+    String responseBody;
+    
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() throws URISyntaxException, IOException {
         Util.createApplicationFolder("image_output");
+        testOutputFilePath = Util.getAppExecutionPath() + File.separator + "image_output";
+        responseBody = TestUtil.getTestResourceFileContent("sample_txt2img_response.json");
     }
 
     @Test
     public void testImageFileCreation() throws IOException, URISyntaxException {
-        String testOutputFilePath = Util.getAppExecutionPath() + File.separator + "image_output";
-        String responseBody = TestUtil.getTestResourceFileContent("sample_txt2img_response.json");
-
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode imageNode = objectMapper.readTree(responseBody).get("images");
 
@@ -38,4 +41,14 @@ public class JsonToImageWriterTest {
         assertTrue(expectedImageFile.exists());
     }
 
+    @Test
+    public void getterSetter() throws IOException, URISyntaxException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode imageNode = objectMapper.readTree(responseBody).get("images");
+
+        JsonToImageWriter jsonToImageWriter = new JsonToImageWriter(imageNode, testOutputFilePath);
+
+        assertEquals(jsonToImageWriter.getJsonNode(), imageNode);
+        assertEquals(jsonToImageWriter.getTargetFolder(), testOutputFilePath);
+    }
 }
