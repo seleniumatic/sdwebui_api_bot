@@ -53,9 +53,24 @@ public class AppTest {
 
         App.doTheWork(fileProcessor, INTERVAL_EXECUTOR_PERIOD);
 
-
         File expectedImageFile = new File(outputFilePath);
 
         assertTrue(expectedImageFile.exists());
-    }    
+    }
+
+    @Test 
+    public void testAppFolderCreation() throws URISyntaxException {
+        App.initialSetup();
+
+        String inputFilePath = Util.getAppExecutionPath() + File.separator + "json_input";
+        String outputFilePath = Util.getAppExecutionPath() + File.separator + "image_output";
+        String conifgFilePath = Util.getAppExecutionPath() + File.separator + "config";
+        String sampleFilePath = Util.getAppExecutionPath() + File.separator + "json_input" + File.separator + "txt2img.json";
+
+        assertTrue(new File(inputFilePath).exists());
+        assertTrue(new File(outputFilePath).exists());
+        assertTrue(new File(conifgFilePath).exists());
+        assertTrue(new File(sampleFilePath).exists());
+    }
+
 }

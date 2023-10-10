@@ -38,7 +38,7 @@ public class App {
         doTheWork(fileProcessor, INTERVAL_EXECUTOR_PERIOD);
     }
 
-    private static void initialSetup() throws URISyntaxException {
+    public static void initialSetup() throws URISyntaxException {
         Util.createApplicationFolder("json_input");
         Util.createApplicationFolder("image_output");
         Util.createApplicationFolder("config");
