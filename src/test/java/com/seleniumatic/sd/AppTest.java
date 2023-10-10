@@ -38,31 +38,24 @@ public class AppTest {
          .withBody(responseBody)));
     }
 
-    // @Test
-    // public void testDoTheWork() throws URISyntaxException {
+    @Test
+    public void testFileProcess() throws IOException, InterruptedException, URISyntaxException {
 
-    //     Integer INTERVAL_API_REQUEST = 4;
-    //     String API_URL = "http://localhost:8089/post";
-    //     Integer INTERVAL_FILE_PROCESSING = 4;
+        Integer INTERVAL_EXECUTOR_PERIOD = AppConfig.getApiRequestIntervalSeconds();
+        Integer INTERVAL_FILE_PROCESSING = AppConfig.getFileProcessingIntervalSeconds();
+        String API_URL = "http://localhost:8089/post";
+        String inputFilePath = Util.getAppExecutionPath() + File.separator + "json_input";
+        String outputFilePath = Util.getAppExecutionPath() + File.separator + "image_output";
 
-    //     App.doTheWork(API_URL, INTERVAL_API_REQUEST, INTERVAL_FILE_PROCESSING);
-    // }
+        HttpClient httpClient = HttpClient.newHttpClient();
+        SdService sdService = new SdService(httpClient, API_URL, "");
+        FileProcessor fileProcessor = new FileProcessor(sdService, inputFilePath, outputFilePath, INTERVAL_FILE_PROCESSING);
 
-    // @Test
-    // public void testFileProcess() throws IOException, InterruptedException, URISyntaxException {
+        App.doTheWork(fileProcessor, INTERVAL_EXECUTOR_PERIOD);
 
-    //     Integer INTERVAL_EXECUTOR_PERIOD = AppConfig.getApiRequestIntervalSeconds();
-    //     Integer INTERVAL_FILE_PROCESSING = AppConfig.getFileProcessingIntervalSeconds();
-    //     String API_URL = "http://localhost:8089/post";
-    //     String inputFilePath = Util.getAppExecutionPath() + File.separator + "json_input";
 
-    //     HttpClient httpClient = HttpClient.newHttpClient();
-    //     SdService sdService = new SdService(httpClient, API_URL, "");
-    //     FileProcessor fileProcessor = new FileProcessor(sdService, inputFilePath, INTERVAL_FILE_PROCESSING);
+        File expectedImageFile = new File(outputFilePath);
 
-    //     String expectedFilePath = App.inputFileProcessor(sdService, testFilePath);
-    //     File expectedImageFile = new File(expectedFilePath);
-
-    //     assertTrue(expectedImageFile.exists());
-    // }    
+        assertTrue(expectedImageFile.exists());
+    }    
 }
